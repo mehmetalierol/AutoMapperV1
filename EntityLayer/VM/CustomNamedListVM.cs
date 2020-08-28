@@ -1,7 +1,6 @@
 ﻿using EntityLayer.Dto;
 using FoMapper.Atribute;
 using System;
-using System.Collections.Generic;
 
 namespace EntityLayer.VM
 {

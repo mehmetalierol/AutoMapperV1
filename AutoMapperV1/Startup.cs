@@ -1,15 +1,11 @@
 using AutoMapper;
-using AutoMapperV1.MapperProfile;
 using EntityLayer;
-using EntityLayer.Base;
 using FoMapper;
-using FoMapper.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
 
 namespace AutoMapperV1
 {
@@ -29,6 +25,7 @@ namespace AutoMapperV1
             EntityInitializer.Init();
 
             #region FoMapper
+
             //add custom profile to mapperconfiguration
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -39,6 +36,7 @@ namespace AutoMapperV1
 
             //create mapper and add it to assembly in singleton mode
             services.AddSingleton(mapperConfig.CreateMapper());
+
             #endregion FoMapper
 
             services.AddControllers();

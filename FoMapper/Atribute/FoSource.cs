@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace FoMapper.Atribute
 {
@@ -7,12 +6,10 @@ namespace FoMapper.Atribute
     {
         public FoSource(Type sourceType, bool reverseMap = false)
         {
-
         }
 
         public FoSource(Type[] sourceTypeList, bool reverseMap = false)
         {
-
         }
     }
 }

@@ -4,18 +4,16 @@ using FoMapper.Config;
 using FoMapper.Extension;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 
 namespace FoMapper
 {
     public class FoMappingProfile : Profile
     {
         private FoConfiguration FoConfig { get; set; }
+
         public FoMappingProfile(IConfiguration foConfig)
         {
             try
@@ -35,7 +33,6 @@ namespace FoMapper
         {
             try
             {
-                
                 if (FoConfig != null)
                 {
                     if (FoConfig.MappingList == null || FoConfig.MappingList.Count == 0)
@@ -64,7 +61,7 @@ namespace FoMapper
         private void DoAttributeBasedMappings()
         {
             var typesWithAttr = MapperExtensions.GetFoTypesWithAttr();
-            if(typesWithAttr != null || typesWithAttr.Count() > 0)
+            if (typesWithAttr != null || typesWithAttr.Count() > 0)
             {
                 foreach (var item in typesWithAttr)
                 {
@@ -107,7 +104,6 @@ namespace FoMapper
                     }
                 }
             }
-            
         }
 
         private void SourceToTargetMapping(FoMapping map)

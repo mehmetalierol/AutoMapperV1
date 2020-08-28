@@ -12,7 +12,7 @@ namespace FoMapper.Extension
     public static class MapperExtensions
     {
         /// <summary>
-        /// This method will clear postfix from given type name 
+        /// This method will clear postfix from given type name
         /// </summary>
         /// <param name="type">Type name</param>
         /// <param name="postFixList">Postfix list to clear from type name</param>
@@ -38,7 +38,7 @@ namespace FoMapper.Extension
         }
 
         /// <summary>
-        /// This method will clear prefix from given type name 
+        /// This method will clear prefix from given type name
         /// </summary>
         /// <param name="type">Type name</param>
         /// <param name="postFixList">Prefix list to clear from type name</param>
@@ -103,7 +103,6 @@ namespace FoMapper.Extension
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
