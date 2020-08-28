@@ -1,11 +1,15 @@
-﻿namespace FoMapper.Config
+﻿using System;
+using System.Collections.Generic;
+
+namespace FoMapper.Config
 {
     public class FoConfiguration
     {
-        public string EntityBase { get; set; }
-        public string DtoBase { get; set; }
-        public string VMBase { get; set; }
-        public string[] PostFixList { get; set; }
-        public string[] PrefixList { get; set; }
+        public List<FoMapping> MappingList { get; set; }
+
+        internal object GetSection(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

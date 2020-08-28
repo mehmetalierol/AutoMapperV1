@@ -1,4 +1,9 @@
-﻿namespace FoMapper.Extension
+﻿using FoMapper.Config;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FoMapper.Extension
 {
     /// <summary>
     /// Extension methods for FoMapper
@@ -13,15 +18,22 @@
         /// <returns></returns>
         public static string ClearPostFix(this string type, string[] postFixList)
         {
-            foreach (var postFix in postFixList)
+            try
             {
-                if (type.ToLower().EndsWith(postFix.ToLower()))
+                foreach (var postFix in postFixList)
                 {
-                    type = type.Substring(0, (type.Length - postFix.Length));
+                    if (type.ToLower().EndsWith(postFix.ToLower()))
+                    {
+                        type = type.Substring(0, (type.Length - postFix.Length));
+                    }
                 }
-            }
 
-            return type;
+                return type;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -32,15 +44,124 @@
         /// <returns></returns>
         public static string ClearPreFix(this string type, string[] preFixList)
         {
-            foreach (var preFix in preFixList)
+            try
             {
-                if (type.ToLower().StartsWith(preFix.ToLower()))
+                foreach (var preFix in preFixList)
                 {
-                    type = type.Substring((preFix.Length - 1), (type.Length - preFix.Length));
+                    if (type.ToLower().StartsWith(preFix.ToLower()))
+                    {
+                        type = type.Substring((preFix.Length - 1), (type.Length - preFix.Length));
+                    }
+                }
+
+                return type;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method will return Base type from given fullname of the class
+        /// </summary>
+        /// <param name="fullName">Class name with namespace</param>
+        /// <returns></returns>
+        public static Type ToBaseType(this string fullName)
+        {
+            try
+            {
+                if (fullName != null && fullName.Trim().Length > 0)
+                {
+                    var splitter = fullName.Split('.');
+                    var typeName = splitter[splitter.Length - 1];
+                    var nameSpace = "";
+                    for (int i = 0; i < splitter.Length; i++)
+                    {
+                        if (i != splitter.Length - 1)
+                        {
+                            nameSpace += splitter[i] + ".";
+                        }
+                    }
+                    nameSpace = nameSpace.Substring(0, nameSpace.Length - 1);
+                    return
+                        AppDomain.CurrentDomain.GetAssemblies()
+                            .SelectMany(t => t.GetTypes())
+                            .Where
+                            (
+                                t => t.IsClass
+                                && t.Name == typeName
+                                && t.Namespace != null
+                                && t.Namespace.Contains(nameSpace)
+                            ).FirstOrDefault();
+                }
+                else
+                {
+                    return null;
                 }
             }
+            catch (Exception ex)
+            {
 
-            return type;
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method returns types of class from given layer (Base type is optional)
+        /// </summary>
+        /// <param name="Layer">Layer namespace of classes</param>
+        /// <param name="FoType">You can specify base class of your classes</param>
+        /// <returns></returns>
+        public static List<Type> GetFoTypes(string Layer, Type baseType = null)
+        {
+            try
+            {
+                return
+                    AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(t => t.GetTypes())
+                        .Where
+                        (
+                            t => t.IsClass
+                            && (baseType != null ? t.BaseType == baseType : true)
+                            && t.Namespace != null
+                            && t.Namespace.Contains(Layer)
+                        )
+                        .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// This method clears the postfixes and prefixes at the same time depends on your lists in appsettings.json
+        /// </summary>
+        /// <param name="typeName">Typename which you want to clear</param>
+        /// <param name="itemModel">Mapping properties from appsettings.json</param>
+        /// <returns></returns>
+        public static string ClearMapType(this string typeName, FoMappingItem itemModel)
+        {
+            try
+            {
+                var result = "";
+                if (itemModel.PrefixList != null && itemModel.PrefixList.Length > 0)
+                {
+                    result = ClearPreFix(typeName, itemModel.PrefixList);
+                }
+
+                if (itemModel.PostFixList != null && itemModel.PostFixList.Length > 0)
+                {
+                    result = ClearPostFix(typeName, itemModel.PostFixList);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
