@@ -1,4 +1,5 @@
-﻿using FoMapper.Config;
+﻿using FoMapper.Atribute;
+using FoMapper.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,6 +127,27 @@ namespace FoMapper.Extension
                             && (baseType != null ? t.BaseType == baseType : true)
                             && t.Namespace != null
                             && t.Namespace.Contains(Layer)
+                        )
+                        .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static List<Type> GetFoTypesWithAttr()
+        {
+            try
+            {
+                return
+                    AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(t => t.GetTypes())
+                        .Where
+                        (
+                            t => t.IsClass
+                            && t.Namespace != null
+                            && (t.GetCustomAttributes(typeof(FoSource), false).Count() > 0)
                         )
                         .ToList();
             }

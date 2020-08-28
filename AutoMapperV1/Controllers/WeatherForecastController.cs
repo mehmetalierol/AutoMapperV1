@@ -21,9 +21,15 @@ namespace AutoMapperV1.Controllers
         [HttpGet]
         public List<UserVM> Get()
         {
-            UserEntity userEntity = new UserEntity { Age = 30, NameSurname = "Mehmet Ali EROL", Password = "123456" };
-            UserDto userDto = _mapper.Map<UserEntity, UserDto>(userEntity);
-            UserVM userVm = _mapper.Map<UserDto, UserVM>(userDto);
+            VehicleDto vehicleDto = new VehicleDto { Price = 99 };
+            UserEntity userEntity = new UserEntity { Age = 30, NameSurname = "Mehmet Ali EROL", Password = "123456", Price = 88 };
+            UserDto userDto = _mapper.Map<UserDto>(userEntity);
+            UserVM userVm = _mapper.Map<UserVM>(userDto);
+
+            CustomNamedVM customType = _mapper.Map<CustomNamedVM>(userDto);
+
+            CustomNamedListVM customListType1 = _mapper.Map<CustomNamedListVM>(userDto);
+            CustomNamedListVM customListType2 = _mapper.Map<CustomNamedListVM>(vehicleDto);
 
             List<UserEntity> userListEntity = new List<UserEntity>
             {
@@ -32,8 +38,8 @@ namespace AutoMapperV1.Controllers
                 new UserEntity{ Age = 50, NameSurname = "Mehmet Ali EROL3", Password = "1234567" }
             };
 
-            List<UserDto> userDtoList = _mapper.Map<List<UserEntity>, List<UserDto>>(userListEntity);
-            List<UserVM> userVMList = _mapper.Map<List<UserDto>, List<UserVM>>(userDtoList);
+            List<UserDto> userDtoList = _mapper.Map<List<UserDto>>(userListEntity);
+            List<UserVM> userVMList = _mapper.Map<List<UserVM>>(userDtoList);
 
             return userVMList;
         }

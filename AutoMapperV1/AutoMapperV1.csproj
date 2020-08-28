@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EntityLayer\EntityLayer.csproj" />
-    <ProjectReference Include="..\FoMapper\FoMapper.csproj" />
   </ItemGroup>
 
 

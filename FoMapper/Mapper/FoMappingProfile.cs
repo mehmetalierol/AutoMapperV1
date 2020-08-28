@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using FoMapper.Atribute;
 using FoMapper.Config;
 using FoMapper.Extension;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
@@ -20,6 +23,7 @@ namespace FoMapper
                 //get configuration from appsettings.json
                 FoConfig = foConfig.GetSection("FoConfiguration").Get<FoConfiguration>();
                 DoMapping();
+                DoAttributeBasedMappings();
             }
             catch (Exception ex)
             {
@@ -31,6 +35,7 @@ namespace FoMapper
         {
             try
             {
+                
                 if (FoConfig != null)
                 {
                     if (FoConfig.MappingList == null || FoConfig.MappingList.Count == 0)
@@ -54,6 +59,55 @@ namespace FoMapper
             {
                 throw ex;
             }
+        }
+
+        private void DoAttributeBasedMappings()
+        {
+            var typesWithAttr = MapperExtensions.GetFoTypesWithAttr();
+            if(typesWithAttr != null || typesWithAttr.Count() > 0)
+            {
+                foreach (var item in typesWithAttr)
+                {
+                    if (item != null && item.CustomAttributes != null && item.CustomAttributes.Count() > 0)
+                    {
+                        var customAttr = item.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(FoSource));
+                        if (customAttr != null)
+                        {
+                            var sourceType = (Type)customAttr.ConstructorArguments.FirstOrDefault(x => x.ArgumentType == typeof(Type)).Value;
+                            var reverseMap = (bool)customAttr.ConstructorArguments.FirstOrDefault(x => x.ArgumentType == typeof(Boolean)).Value;
+
+                            if (sourceType != null)
+                            {
+                                if (reverseMap == true)
+                                {
+                                    CreateMap(sourceType, item).ReverseMap();
+                                }
+                                else
+                                {
+                                    CreateMap(sourceType, item);
+                                }
+                            }
+
+                            var sourceTypes = (ReadOnlyCollection<CustomAttributeTypedArgument>)customAttr.ConstructorArguments.FirstOrDefault(x => x.ArgumentType == typeof(Type[])).Value;
+                            if (sourceTypes != null)
+                            {
+                                foreach (var typeItem in sourceTypes)
+                                {
+                                    if (reverseMap == true)
+                                    {
+                                        CreateMap(typeItem.Value as Type, item).ReverseMap();
+                                    }
+                                    else
+                                    {
+                                        CreateMap(typeItem.Value as Type, item);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
         }
 
         private void SourceToTargetMapping(FoMapping map)
